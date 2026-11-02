@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimedLight
   delayInSeconds: 10
+  lightToDim: {fileID: 0}
   playerTag: Player
 --- !u!135 &7821955944275345217
 SphereCollider:

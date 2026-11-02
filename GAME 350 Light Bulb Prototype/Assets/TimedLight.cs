@@ -8,6 +8,7 @@ public class TimedLight : MonoBehaviour
 
     [Header("Timer Settings")]
     public float delayInSeconds = 3.0f;
+    public Light lightToDim;
 
     [Header("Target Settings")]
     public string playerTag = "Player";
@@ -16,6 +17,8 @@ public class TimedLight : MonoBehaviour
     {
         myLight = GetComponent<Light>();
         StartCoroutine(TurnOffAndCheckPlayer());
+        //coroutine to dim the lights over time
+        StartCoroutine(FadeOutLight(delayInSeconds));
     }
 
     IEnumerator TurnOffAndCheckPlayer()
@@ -31,6 +34,21 @@ public class TimedLight : MonoBehaviour
         {
             DestroyPlayer(playerInRange);
         }
+    }
+
+    IEnumerator FadeOutLight(float time)
+    {
+        float startIntensity = lightToDim.intensity;
+        float elapsed = 0.0f;
+
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            lightToDim.intensity = Mathf.Lerp(startIntensity, 0f, elapsed / time);
+            yield return null;
+        }
+
+        lightToDim.intensity = 0f;
     }
 
     // Handles a player entering the zone (either before or after the light turns off)
