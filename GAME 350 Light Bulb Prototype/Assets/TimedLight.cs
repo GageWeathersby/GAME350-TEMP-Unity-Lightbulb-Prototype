@@ -4,32 +4,34 @@ using System.Collections;
 public class TimedLight : MonoBehaviour
 {
     private Light myLight;
-    private GameObject playerInRange; // Tracks if a player is currently inside
+    private GameObject playerInRange; // Tracks if a player is currently inside the light's area.
 
     [Header("Timer Settings")]
-    public float delayInSeconds = 3.0f;
+    public float timeUntilDark = 3.0f;
     public Light lightToDim;
 
+    //Checks for what thing(s) to destroy, based on tags.
     [Header("Target Settings")]
     public string playerTag = "Player";
 
     void Start()
     {
         myLight = GetComponent<Light>();
+        //Coroutine to shut off the light and check if player is in its area.
         StartCoroutine(TurnOffAndCheckPlayer());
-        //coroutine to dim the lights over time
-        StartCoroutine(FadeOutLight(delayInSeconds));
+        //Coroutine to dim the lights over time.
+        StartCoroutine(FadeOutLight(timeUntilDark));
     }
 
     IEnumerator TurnOffAndCheckPlayer()
     {
         myLight.enabled = true;
-        yield return new WaitForSeconds(delayInSeconds);
+        yield return new WaitForSeconds(timeUntilDark);
         
-        // 1. Turn off the light
+        // 1. Turn off the light.
         myLight.enabled = false;
 
-        // 2. Catch the player if they are already standing inside when it goes dark
+        // 2. Catch the player if they are already standing inside when it goes dark.
         if (playerInRange != null)
         {
             DestroyPlayer(playerInRange);
@@ -51,14 +53,14 @@ public class TimedLight : MonoBehaviour
         lightToDim.intensity = 0f;
     }
 
-    // Handles a player entering the zone (either before or after the light turns off)
+    // Handles a tagged object that enters the zone (either before or after the light turns off).
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(playerTag))
         {
             playerInRange = other.gameObject;
 
-            // If the light is already off, destroy them instantly upon entry
+            // If the light is already off, destroy player instantly upon entry. NOTE this will always kill the player, not any tagged object.
             if (!myLight.enabled)
             {
                 DestroyPlayer(other.gameObject);
@@ -79,6 +81,6 @@ public class TimedLight : MonoBehaviour
     {
         Destroy(player);
         playerInRange = null; // Clear reference
-        Debug.Log("Player stepped into the dark and was destroyed!");
+        Debug.Log("The darkness caught up with you, and you were consumed.");
     }
 }

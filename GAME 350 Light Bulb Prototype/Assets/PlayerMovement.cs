@@ -15,6 +15,10 @@ public class PlayerMovement : MonoBehaviour
     {
         // Automatically get the Character Controller component attached to the Player
         controller = GetComponent<CharacterController>();
+
+        //lock cursor and make it invisible
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
